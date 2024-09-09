@@ -17,7 +17,7 @@ defmodule FithubWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import FithubWeb.Gettext
+  use Gettext, backend: FithubWeb.Gettext
 
   @doc """
   Renders a modal.

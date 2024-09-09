@@ -43,7 +43,7 @@ defmodule FithubWeb do
         layouts: [html: FithubWeb.Layouts]
 
       import Plug.Conn
-      import FithubWeb.Gettext
+      use Gettext, backend: FithubWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +85,7 @@ defmodule FithubWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import FithubWeb.CoreComponents
-      import FithubWeb.Gettext
+      use Gettext, backend: FithubWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
