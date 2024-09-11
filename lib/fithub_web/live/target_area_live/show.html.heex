@@ -1,0 +1,26 @@
+<.header>
+  Target area <%= @target_area.id %>
+  <:subtitle>This is a target_area record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/target_areas/#{@target_area}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit target_area</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @target_area.name %></:item>
+</.list>
+
+<.back navigate={~p"/target_areas"}>Back to target_areas</.back>
+
+<.modal :if={@live_action == :edit} id="target_area-modal" show on_cancel={JS.patch(~p"/target_areas/#{@target_area}")}>
+  <.live_component
+    module={FithubWeb.TargetAreaLive.FormComponent}
+    id={@target_area.id}
+    title={@page_title}
+    action={@live_action}
+    target_area={@target_area}
+    patch={~p"/target_areas/#{@target_area}"}
+  />
+</.modal>

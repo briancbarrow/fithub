@@ -68,6 +68,20 @@ defmodule FithubWeb.Router do
       on_mount: [{FithubWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/exercises", ExerciseLive.Index, :index
+      live "/exercises/new", ExerciseLive.Index, :new
+      live "/exercises/:id/edit", ExerciseLive.Index, :edit
+
+      live "/exercises/:id", ExerciseLive.Show, :show
+      live "/exercises/:id/show/edit", ExerciseLive.Show, :edit
+
+      live "/target_areas", TargetAreaLive.Index, :index
+      live "/target_areas/new", TargetAreaLive.Index, :new
+      live "/target_areas/:id/edit", TargetAreaLive.Index, :edit
+
+      live "/target_areas/:id", TargetAreaLive.Show, :show
+      live "/target_areas/:id/show/edit", TargetAreaLive.Show, :edit
     end
   end
 

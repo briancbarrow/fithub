@@ -1,0 +1,41 @@
+<.header>
+  Listing Target areas
+  <:actions>
+    <.link patch={~p"/target_areas/new"}>
+      <.button>New Target area</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="target_areas"
+  rows={@streams.target_areas}
+  row_click={fn {_id, target_area} -> JS.navigate(~p"/target_areas/#{target_area}") end}
+>
+  <:col :let={{_id, target_area}} label="Name"><%= target_area.name %></:col>
+  <:action :let={{_id, target_area}}>
+    <div class="sr-only">
+      <.link navigate={~p"/target_areas/#{target_area}"}>Show</.link>
+    </div>
+    <.link patch={~p"/target_areas/#{target_area}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, target_area}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: target_area.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="target_area-modal" show on_cancel={JS.patch(~p"/target_areas")}>
+  <.live_component
+    module={FithubWeb.TargetAreaLive.FormComponent}
+    id={@target_area.id || :new}
+    title={@page_title}
+    action={@live_action}
+    target_area={@target_area}
+    patch={~p"/target_areas"}
+  />
+</.modal>
