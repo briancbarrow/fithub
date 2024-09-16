@@ -8,6 +8,8 @@ defmodule Fithub.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
+    belongs_to :role, Fithub.Accounts.Role
+    many_to_many :custom_permissions, Fithub.Accounts.Permission, join_through: "role_permissions"
 
     timestamps(type: :utc_datetime)
   end
@@ -40,6 +42,7 @@ defmodule Fithub.Accounts.User do
     |> cast(attrs, [:email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> add_default_role()
   end
 
   defp validate_email(changeset, opts) do
@@ -60,6 +63,15 @@ defmodule Fithub.Accounts.User do
     # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
     |> maybe_hash_password(opts)
   end
+
+  defp add_default_role(changeset) do
+    case get_field(changeset, :role_id) do
+      nil -> put_change(changeset, :role_id, default_role_id())
+      _ -> changeset
+    end
+  end
+
+  defp default_role_id(), do: 1
 
   defp maybe_hash_password(changeset, opts) do
     hash_password? = Keyword.get(opts, :hash_password, true)
@@ -120,6 +132,16 @@ defmodule Fithub.Accounts.User do
     |> cast(attrs, [:password])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_password(opts)
+  end
+
+  @doc """
+  Validates the role for a user
+  """
+  def role_changeset(user, attrs, valid_role_ids) do
+    user
+    |> cast(attrs, [:role_id])
+    |> validate_required([:role_id])
+    |> validate_inclusion(:role_id, valid_role_ids)
   end
 
   @doc """

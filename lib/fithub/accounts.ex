@@ -215,6 +215,21 @@ defmodule Fithub.Accounts do
     end
   end
 
+  @doc """
+  Updates a user's role
+  """
+  def update_user_role(user, attrs) do
+    valid_role_ids = get_valid_role_ids()
+
+    user
+    |> User.role_changeset(attrs, valid_role_ids)
+    |> Repo.update()
+  end
+
+  defp get_valid_role_ids do
+    Repo.all(Role) |> Enum.map(& &1.id)
+  end
+
   ## Session
 
   @doc """
