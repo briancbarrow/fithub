@@ -213,6 +213,14 @@ defmodule FithubWeb.UserAuth do
     end
   end
 
+  # @doc """
+  # Used for routes that require the user to be an admin
+  # """
+
+  # def require_admin_role(conn, _opts) do
+  #   if conn.assigns[:current]
+  # end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)

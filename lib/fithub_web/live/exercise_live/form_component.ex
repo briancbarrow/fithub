@@ -1,7 +1,6 @@
 defmodule FithubWeb.ExerciseLive.FormComponent do
   use FithubWeb, :live_component
 
-  alias Fithub.Track.TargetArea
   alias Fithub.Track.Exercise
   alias Fithub.Track
 
