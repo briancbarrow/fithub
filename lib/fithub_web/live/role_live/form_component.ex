@@ -52,23 +52,6 @@ defmodule FithubWeb.RoleLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"role" => role_params}, socket) do
-    # IO.inspect(role_params, label: "role_params")
-
-    # new_role_params =
-    #   if role_params["permissions"] do
-    #     Map.put(
-    #       role_params,
-    #       "permissions",
-    #       Enum.map(role_params["permissions"], fn id ->
-    #         Permission.map_permission_data(Accounts.get_permission!(id))
-    #       end)
-    #     )
-    #   else
-    #     role_params
-    #   end
-
-    # IO.inspect(new_role_params["permissions"], label: "new_role_params -> permissions")
-
     changeset = Accounts.change_role(socket.assigns.role, role_params)
     # IO.inspect(changeset)
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}

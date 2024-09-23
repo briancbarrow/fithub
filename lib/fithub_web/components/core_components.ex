@@ -450,7 +450,7 @@ defmodule FithubWeb.CoreComponents do
     assigns.value
     |> Enum.map(fn x ->
       case x do
-        %Ecto.Changeset{action: :update, data: data} ->
+        %Ecto.Changeset{data: data} ->
           data.id
 
         %Ecto.Changeset{} ->
