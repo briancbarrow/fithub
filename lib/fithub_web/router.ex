@@ -82,6 +82,20 @@ defmodule FithubWeb.Router do
 
       live "/target_areas/:id", TargetAreaLive.Show, :show
       live "/target_areas/:id/show/edit", TargetAreaLive.Show, :edit
+
+      live "/roles", RoleLive.Index, :index
+      live "/roles/new", RoleLive.Index, :new
+      live "/roles/:id/edit", RoleLive.Index, :edit
+
+      live "/roles/:id", RoleLive.Show, :show
+      live "/roles/:id/show/edit", RoleLive.Show, :edit
+
+      live "/permissions", PermissionLive.Index, :index
+      live "/permissions/new", PermissionLive.Index, :new
+      live "/permissions/:id/edit", PermissionLive.Index, :edit
+
+      live "/permissions/:id", PermissionLive.Show, :show
+      live "/permissions/:id/show/edit", PermissionLive.Show, :edit
     end
   end
 

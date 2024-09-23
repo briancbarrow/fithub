@@ -367,20 +367,23 @@ defmodule FithubWeb.CoreComponents do
   end
 
   def input(%{type: "checkgroup"} = assigns) do
+    assigns = assign(assigns, :selected, pick_selected(assigns))
+
     ~H"""
     <div phx-feedback-for={@name} class="text-sm">
       <.label for={@id}><%= @label %></.label>
       <div class="mt-1 w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
         <div class="grid grid-cols-1 gap-1 text-sm items-baseline">
-          <input type="hidden" name={@name} value="" />
+          <%!-- <input type="hidden" name={@name} value="" /> --%>
           <div :for={{label, value} <- @options} class="flex items-center">
+            <span><%= value %> <%= is_integer(value) %></span>
             <label for={"#{@name}-#{value}"} class="font-medium text-gray-700">
               <input
                 type="checkbox"
                 id={"#{@name}-#{value}"}
                 name={@name}
                 value={value}
-                checked={value in @value}
+                checked={value in @selected}
                 class="mr-2 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 transition duration-150 ease-in-out"
                 {@rest}
               />
@@ -414,6 +417,56 @@ defmodule FithubWeb.CoreComponents do
       <.error :for={msg <- @errors}><%= msg %></.error>
     </div>
     """
+  end
+
+  @doc """
+  Generate a checkbox group for multi-select.
+  """
+  attr :id, :any
+  attr :name, :any
+  attr :label, :string, default: nil
+  attr :value, :any
+
+  attr :field, Phoenix.HTML.FormField,
+    doc: "a form field struct retrieved from the form, for example: @form[:email]"
+
+  attr :errors, :list
+  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
+  attr :rest, :global, include: ~w(disabled form readonly)
+  attr :class, :string, default: nil
+
+  def checkgroup(assigns) do
+    new_assigns =
+      assigns
+      |> assign(:multiple, true)
+      |> assign(:type, "checkgroup")
+
+    # |> assign(:selected, pick_selected(assigns))
+
+    input(new_assigns)
+  end
+
+  defp pick_selected(assigns) do
+    assigns.value
+    |> Enum.map(fn x ->
+      case x do
+        %Ecto.Changeset{action: :update, data: data} ->
+          data.id
+
+        %Ecto.Changeset{} ->
+          nil
+
+        %{id: id} ->
+          id
+
+        x when is_binary(x) ->
+          if x == "", do: nil, else: String.to_integer(x)
+
+        _ ->
+          nil
+      end
+    end)
+    |> Enum.filter(&(!is_nil(&1)))
   end
 
   @doc """
@@ -700,30 +753,5 @@ defmodule FithubWeb.CoreComponents do
   """
   def translate_errors(errors, field) when is_list(errors) do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
-  end
-
-  @doc """
-  Generate a checkbox group for multi-select.
-  """
-  attr :id, :any
-  attr :name, :any
-  attr :label, :string, default: nil
-  attr :value, :any
-
-  attr :field, Phoenix.HTML.FormField,
-    doc: "a form field struct retrieved from the form, for example: @form[:email]"
-
-  attr :errors, :list
-  attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
-  attr :rest, :global, include: ~w(disabled form readonly)
-  attr :class, :string, default: nil
-
-  def checkgroup(assigns) do
-    new_assigns =
-      assigns
-      |> assign(:multiple, true)
-      |> assign(:type, "checkgroup")
-
-    input(new_assigns)
   end
 end

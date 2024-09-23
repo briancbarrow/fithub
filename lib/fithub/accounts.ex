@@ -6,7 +6,7 @@ defmodule Fithub.Accounts do
   import Ecto.Query, warn: false
   alias Fithub.Repo
 
-  alias Fithub.Accounts.{User, UserToken, UserNotifier}
+  alias Fithub.Accounts.{User, UserToken, UserNotifier, Role, Permission}
 
   ## Database getters
 
@@ -364,5 +364,206 @@ defmodule Fithub.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Returns the list of roles.
+
+  ## Examples
+
+      iex> list_roles()
+      [%Role{}, ...]
+
+  """
+  def list_roles do
+    Repo.all(Role)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking role changes.
+
+  ## Examples
+
+      iex> change_role(role)
+      %Ecto.Changeset{data: %Role{}}
+
+  """
+  def change_role(%Role{} = role, attrs \\ %{}) do
+    Role.changeset(role, attrs)
+  end
+
+  @doc """
+  Creates a role.
+
+  ## Examples
+
+      iex> create_role(%{field: value})
+      {:ok, %Role{}}
+
+      iex> create_role(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_role(attrs \\ %{}) do
+    %Role{}
+    |> Role.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Gets a single role.
+
+  Raises `Ecto.NoResultsError` if the Role does not exist.
+
+  ## Examples
+
+      iex> get_role!(123)
+      %Role{}
+
+      iex> get_role!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_role!(id) do
+    Repo.get!(Role, id)
+  end
+
+  @doc """
+  Updates a role.
+
+  ## Examples
+
+      iex> update_role(role, %{field: new_value})
+      {:ok, %Role{}}
+
+      iex> update_role(role, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_role(%Role{} = role, attrs) do
+    cs =
+      role
+      |> Role.changeset(attrs)
+
+    IO.inspect(cs, label: "update role changeset")
+
+    cs
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a role.
+
+  ## Examples
+
+      iex> delete_role(role)
+      {:ok, %Role{}}
+
+      iex> delete_role(role)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_role(%Role{} = role) do
+    Repo.delete(role)
+  end
+
+  @doc """
+  Returns the list of permissions.
+
+  ## Examples
+
+      iex> list_permissions()
+      [%Permission{}, ...]
+
+  """
+  def list_permissions do
+    Repo.all(Permission)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking permission changes.
+
+  ## Examples
+
+      iex> change_permission(permission)
+      %Ecto.Changeset{data: %Permission{}}
+
+  """
+  def change_permission(%Permission{} = permission, attrs \\ %{}) do
+    Permission.changeset(permission, attrs)
+  end
+
+  @doc """
+  Creates a permission.
+
+  ## Examples
+
+      iex> create_permission(%{field: value})
+      {:ok, %Permission{}}
+
+      iex> create_permission(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_permission(attrs \\ %{}) do
+    %Permission{}
+    |> Permission.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Gets a single permission.
+
+  Raises `Ecto.NoResultsError` if the Permission does not exist.
+
+  ## Examples
+
+      iex> get_permission!(123)
+      %Permission{}
+
+      iex> get_permission!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_permission!(id) do
+    Repo.get!(Permission, id)
+  end
+
+  def get_permissions(ids) do
+    Repo.all(from p in Permission, where: p.id in ^ids)
+  end
+
+  @doc """
+  Updates a permission.
+
+  ## Examples
+
+      iex> update_permission(permission, %{field: new_value})
+      {:ok, %Permission{}}
+
+      iex> update_permission(permission, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_permission(%Permission{} = permission, attrs) do
+    permission
+    |> Permission.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a permission.
+
+  ## Examples
+
+      iex> delete_permission(permission)
+      {:ok, %Permission{}}
+
+      iex> delete_permission(permission)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_permission(%Permission{} = permission) do
+    Repo.delete(permission)
   end
 end
