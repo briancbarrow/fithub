@@ -376,7 +376,6 @@ defmodule FithubWeb.CoreComponents do
         <div class="grid grid-cols-1 gap-1 text-sm items-baseline">
           <%!-- <input type="hidden" name={@name} value="" /> --%>
           <div :for={{label, value} <- @options} class="flex items-center">
-            <span><%= value %> <%= is_integer(value) %></span>
             <label for={"#{@name}-#{value}"} class="font-medium text-gray-700">
               <input
                 type="checkbox"
@@ -441,8 +440,6 @@ defmodule FithubWeb.CoreComponents do
       |> assign(:multiple, true)
       |> assign(:type, "checkgroup")
 
-    # |> assign(:selected, pick_selected(assigns))
-
     input(new_assigns)
   end
 
@@ -450,7 +447,7 @@ defmodule FithubWeb.CoreComponents do
     assigns.value
     |> Enum.map(fn x ->
       case x do
-        %Ecto.Changeset{data: data} ->
+        %Ecto.Changeset{action: :update, data: data} ->
           data.id
 
         %Ecto.Changeset{} ->
@@ -460,7 +457,7 @@ defmodule FithubWeb.CoreComponents do
           id
 
         x when is_binary(x) ->
-          if x == "", do: nil, else: String.to_integer(x)
+          if x == "", do: nil, else: x
 
         _ ->
           nil

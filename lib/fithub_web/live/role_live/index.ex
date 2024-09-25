@@ -20,9 +20,16 @@ defmodule FithubWeb.RoleLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    socket =
+      socket
+      |> assign(:page_title, "Edit Role")
+      |> assign(
+        :role,
+        Accounts.get_role!(id)
+        |> Repo.preload(:permissions)
+      )
+
     socket
-    |> assign(:page_title, "Edit Role")
-    |> assign(:role, Accounts.get_role!(id) |> Repo.preload(:permissions))
   end
 
   defp apply_action(socket, :new, _params) do

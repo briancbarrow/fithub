@@ -18,8 +18,6 @@ defmodule Fithub.Accounts.Role do
 
   @doc false
   def changeset(role, attrs) do
-    # IO.inspect(attrs, label: "Role changeset attrs")
-
     role
     |> Repo.preload(:permissions)
     |> cast(attrs, [:name, :description])
@@ -30,18 +28,32 @@ defmodule Fithub.Accounts.Role do
     |> unique_constraint(:name)
   end
 
-  defp fetch_permissions(%{permissions: ids}),
-    do: fetch_permissions(%{"permissions" => ids})
+  def load_changeset(role, attrs) do
+    changeset =
+      role
+      |> Repo.preload(:permissions)
+      |> cast(attrs, [:name, :description])
+      # |> cast_assoc(:permissions, with: &Fithub.Accounts.Permission.changeset/2)
+      |> put_assoc(:permissions, fetch_permissions(attrs))
+      |> validate_required([:name])
+      |> validate_format(:name, ~r/^[a-z]+$/, message: "must be lowercase")
+      |> unique_constraint(:name)
 
-  defp fetch_permissions(%{"permissions" => permission_ids}) do
+    %{changeset | action: :load}
+  end
+
+  def fetch_permissions(%{permissions: ids}) do
+    fetch_permissions(%{"permissions" => ids})
+  end
+
+  def fetch_permissions(%{"permissions" => permission_ids}) do
     permissions =
       permission_ids
       |> Enum.reject(&(&1 == ""))
       |> Accounts.get_permissions()
 
-    IO.inspect(permissions, label: "permissions")
     permissions
   end
 
-  defp fetch_permissions(_), do: []
+  def fetch_permissions(_), do: []
 end

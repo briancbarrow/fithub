@@ -1,6 +1,6 @@
 defmodule Fithub.Accounts.RolePermission do
   use Ecto.Schema
-  import Ecto.Changeset
+  # import Ecto.Changeset
 
   schema "role_permissions" do
     belongs_to :role, Fithub.Accounts.Role, primary_key: true
