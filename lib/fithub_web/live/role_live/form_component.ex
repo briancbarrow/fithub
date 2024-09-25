@@ -51,9 +51,7 @@ defmodule FithubWeb.RoleLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"role" => role_params}, socket) do
-    # IO.inspect(role_params, label: "role_params")
     changeset = Accounts.change_role(socket.assigns.role, role_params)
-    # IO.inspect(changeset, label: "validate changeset")
     {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
   end
 

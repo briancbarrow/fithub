@@ -69,6 +69,13 @@ defmodule FithubWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
+      live "/all-users", UserLive.Index, :index
+      # live "/all-users/new", UserLive.Index, :new
+      live "/all-users/:id/edit", UserLive.Index, :edit
+
+      live "/all-users/:id", UserLive.Show, :show
+      live "/all-users/:id/show/edit", UsersLive.Show, :edit
+
       live "/exercises", ExerciseLive.Index, :index
       live "/exercises/new", ExerciseLive.Index, :new
       live "/exercises/:id/edit", ExerciseLive.Index, :edit

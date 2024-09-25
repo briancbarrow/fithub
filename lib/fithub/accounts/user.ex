@@ -1,6 +1,7 @@
 defmodule Fithub.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Fithub.Accounts
 
   schema "users" do
     field :email, :string
@@ -137,7 +138,9 @@ defmodule Fithub.Accounts.User do
   @doc """
   Validates the role for a user
   """
-  def role_changeset(user, attrs, valid_role_ids) do
+  def role_changeset(user, attrs \\ %{}) do
+    valid_role_ids = Accounts.get_valid_role_ids()
+
     user
     |> cast(attrs, [:role_id])
     |> validate_required([:role_id])

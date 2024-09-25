@@ -1,0 +1,30 @@
+<.header>
+  Listing Users
+</.header>
+
+<.table
+  id="users"
+  rows={@streams.users}
+  row_click={fn {_id, user} -> JS.navigate(~p"/all-users/#{user}") end}
+>
+  <:col :let={{_id, user}} label="Email"><%= user.email %></:col>
+  <:col :let={{_id, user}} label="Role"><%= user.role.name %></:col>
+
+  <:action :let={{_id, user}}>
+    <div class="sr-only">
+      <.link navigate={~p"/all-users/#{user}"}>Show</.link>
+    </div>
+    <.link patch={~p"/all-users/#{user}/edit"}>Edit</.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:edit]} id="user-modal" show on_cancel={JS.patch(~p"/all-users")}>
+  <.live_component
+    module={FithubWeb.UserLive.FormComponent}
+    id={@user.id}
+    title={@page_title}
+    action={@live_action}
+    user={@user}
+    patch={~p"/all-users"}
+  />
+</.modal>

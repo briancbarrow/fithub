@@ -11,6 +11,13 @@ defmodule Fithub.Accounts do
   ## Database getters
 
   @doc """
+  Lists all users
+  """
+  def list_users() do
+    Repo.all(User)
+  end
+
+  @doc """
   Gets a user by email.
 
   ## Examples
@@ -219,14 +226,12 @@ defmodule Fithub.Accounts do
   Updates a user's role
   """
   def update_user_role(user, attrs) do
-    valid_role_ids = get_valid_role_ids()
-
     user
-    |> User.role_changeset(attrs, valid_role_ids)
+    |> User.role_changeset(attrs)
     |> Repo.update()
   end
 
-  defp get_valid_role_ids do
+  def get_valid_role_ids do
     Repo.all(Role) |> Enum.map(& &1.id)
   end
 
@@ -388,6 +393,7 @@ defmodule Fithub.Accounts do
       %Ecto.Changeset{data: %Role{}}
 
   """
+
   def change_role(%Role{} = role, attrs \\ %{}) do
     Role.changeset(role, attrs)
   end
@@ -444,8 +450,6 @@ defmodule Fithub.Accounts do
     cs =
       role
       |> Role.changeset(attrs)
-
-    IO.inspect(cs, label: "update role changeset")
 
     cs
     |> Repo.update()
@@ -530,7 +534,8 @@ defmodule Fithub.Accounts do
   end
 
   def get_permissions(ids) do
-    Repo.all(from p in Permission, where: p.id in ^ids)
+    r = Repo.all(from p in Permission, where: p.id in ^ids)
+    r
   end
 
   @doc """
