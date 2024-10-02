@@ -4,7 +4,9 @@ defmodule FithubWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
 
+  alias Fithub.Accounts.Role
   alias Fithub.Accounts
+  alias Fithub.Repo
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -234,4 +236,26 @@ defmodule FithubWeb.UserAuth do
   defp maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: ~p"/"
+
+  def require_authorized_user(conn, opts) do
+    user = conn.assigns[:current_user]
+    required_role = Keyword.get(opts, :role)
+
+    if !required_role do
+      conn
+    end
+
+    user = user |> Repo.preload(:role)
+    # IO.inspect(user, label: "USER")
+    # conn |> IO.inspect(label: "HERE") |> put_flash(:info, "Hit the Plug #{user.role.name}")
+
+    if user && user.role.name == required_role do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You do not have access to that page.")
+      |> redirect(to: ~p"/")
+      |> halt()
+    end
+  end
 end

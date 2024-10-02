@@ -13,6 +13,10 @@ defmodule FithubWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :admin do
+    plug :require_authorized_user, role: "superadmin"
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -68,7 +72,13 @@ defmodule FithubWeb.Router do
       on_mount: [{FithubWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+    end
+  end
 
+  scope "/", FithubWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin]
+
+    live_session :admin, on_mount: [{FithubWeb.UserAuth, :ensure_authenticated}] do
       live "/all-users", UserLive.Index, :index
       # live "/all-users/new", UserLive.Index, :new
       live "/all-users/:id/edit", UserLive.Index, :edit
